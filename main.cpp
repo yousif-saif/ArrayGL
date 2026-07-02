@@ -8,9 +8,7 @@
 #include <stb/stb_image.h>
 #include "./headers/shader.h"
 #include "./headers/texture.h"
-// #include "./headers/material.h"
 #include "./headers/render.h"
-// #include "./headers/EC/entity.h"
 #include "./headers/pixel.h"
 #include "./headers/array.h"
 #include <glad/glad.h>
@@ -19,8 +17,6 @@
 #include <chrono>
 
 using namespace std;
-// #define 800 800
-// #define 600 600
 
 void getInput(GLFWwindow* window, float &x, float &y);
 
@@ -65,12 +61,6 @@ int main() {
     auto projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, 0.0f, -1.0f);
     shader.set_mat4("projection", projection);
 
-    // Pixel pixel(0, 1, {2, 3, 4});
-    // glm::vec3 color{0.5, 0.8, 0.0};
-    // Pixel pixel(0.0, 0.0, 32.0, 32.0, {color[0], color[1], color[2]});
-    // Pixel pixel2(32.0, 0.0, 32.0, 32.0, {color[0], color[1], color[2]});
-    
-
     Array array1(10, 10, 32, glm::vec3(0.1, 0.5, 0.7), false, 1);
     Array array2(9, 9, 32, glm::vec3(0.2, 0.4, 0.2), false, 2);
     Array array3(8, 8, 32, glm::vec3(0.5, 0.8, 0.4), false, 3);
@@ -79,7 +69,6 @@ int main() {
 
     pair<Pixel, Pixel> player = make_pair(array1[9][1], array1[8][1]);
     Renderer renderer = Renderer(vector<GLuint>{2, 2}, 128, shader);
-    // shader.set_vec3("color", color);
 
     glm::vec3 color{1.0, 0.0, 0.0};
     player.first.color = vector<float>{color[0], color[1], color[2]};
@@ -102,14 +91,9 @@ int main() {
 
     cout << renderer.entities.size() << endl;
     while (!glfwWindowShouldClose(window)) {
-        // auto frameStart = chrono::steady_clock::now();
-
-        // processInput(window);
         glClearColor(255.0f, 0.0f, 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // renderer.begin();
-        // renderer.drawArray(array);
         renderer.drawPixel(player.first);
         renderer.drawPixel(player.second);
         renderer.drawEntities();
@@ -117,24 +101,12 @@ int main() {
         getInput(window, player.first.x, player.first.y);
         getInput(window, player.second.x, player.second.y);
 
-
-
-        // renderer.end();
-
-        // auto frameEnd = std::chrono::steady_clock::now();
-        // chrono::duration<double, milli> elapsed = frameEnd - frameStart;
-
-        // double fps = 60;
-        // double milliseconds = 1000/fps;
-        // double sleepTime = milliseconds - elapsed.count;
-
         glfwSwapBuffers(window);
         glfwPollEvents();
 
         this_thread::sleep_for(chrono::milliseconds(1));
     }
 
-    // delete e_game;
     glfwTerminate();
     cout << "HELLO WORLD" << endl;
     return 0;

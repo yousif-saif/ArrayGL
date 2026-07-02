@@ -5,25 +5,6 @@
 #include <iostream>
 #include "./pixel.h"
 
-// class Array {
-//     private:
-//         int gridW_, gridH_;
-//         int pixelSize_;
-//         bool showLines_;
-
-//     public:
-//         vector<vector<Pixel>> pixels;
-//         Array(int gridW, int gridH, int pixelSize, bool showLines);
-
-//         int& operator[](int index) {
-//             if (index > )
-//         }
-// };
-
-
-
-
-
 class Array {
     public:
         int rows;
@@ -33,7 +14,6 @@ class Array {
         int z_index;
         glm::vec3 color;
         vector<Pixel> data;
-        // glm::vec3 color{0.5, 0.8, 0.0};
 
         Array(int rows, int cols, int pixelSize, glm::vec3 color, bool showLines, int z_index=0);
         
