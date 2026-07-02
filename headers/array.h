@@ -2,11 +2,17 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <string>
-#include <iostream>
 #include "./pixel.h"
+
+class Renderer;
 
 class Array {
     public:
+        // TODO: ADD X AND Y CORDS CONTROL SO YOU CAN MOVE THE ARRAY AROUND ALR??????
+        float x;
+        float y;
+
+
         int rows;
         int cols;
         int pixelSize;
@@ -15,7 +21,7 @@ class Array {
         glm::vec3 color;
         vector<Pixel> data;
 
-        Array(int rows, int cols, int pixelSize, glm::vec3 color, bool showLines, int z_index=0);
+        Array(int rows, int cols, int pixelSize, glm::vec3 color, Renderer *renderer, bool showLines, int z_index=0);
         
         class RowProxy {
             private:

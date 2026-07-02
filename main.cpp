@@ -61,15 +61,16 @@ int main() {
     auto projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, 0.0f, -1.0f);
     shader.set_mat4("projection", projection);
 
-    Array array1(10, 10, 32, glm::vec3(0.1, 0.5, 0.7), false, 1);
-    Array array2(9, 9, 32, glm::vec3(0.2, 0.4, 0.2), false, 2);
-    Array array3(8, 8, 32, glm::vec3(0.5, 0.8, 0.4), false, 3);
-    Array array4(7, 7, 32, glm::vec3(0.2, 0.9, 0.7), false, 4);
+    Renderer renderer = Renderer(vector<GLuint>{2, 2}, 128, shader);
+    
+    
+    Array array1(10, 10, 32, glm::vec3(0.1, 0.5, 0.7), &renderer, false, 1);
+    Array array2(9, 9, 32, glm::vec3(0.2, 0.4, 0.2), &renderer, false, 2);
+    Array array3(8, 8, 32, glm::vec3(0.5, 0.8, 0.4), &renderer, false, 3);
+    Array array4(7, 7, 32, glm::vec3(0.2, 0.9, 0.7), &renderer, false, 4);
 
 
     pair<Pixel, Pixel> player = make_pair(array1[9][1], array1[8][1]);
-    Renderer renderer = Renderer(vector<GLuint>{2, 2}, 128, shader);
-
     glm::vec3 color{1.0, 0.0, 0.0};
     player.first.color = vector<float>{color[0], color[1], color[2]};
     
@@ -84,19 +85,14 @@ int main() {
 
     };
 
-    Entity ent1(5, 7, &array1, &renderer);
-    Entity ent2(1, 2, &array2, &renderer);
-    Entity ent3(1, 2, &array3, &renderer);
-    Entity ent4(1, 2, &array4, &renderer);
 
-    cout << renderer.entities.size() << endl;
     while (!glfwWindowShouldClose(window)) {
         glClearColor(255.0f, 0.0f, 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         renderer.drawPixel(player.first);
         renderer.drawPixel(player.second);
-        renderer.drawEntities();
+        renderer.drawArrays();
 
         getInput(window, player.first.x, player.first.y);
         getInput(window, player.second.x, player.second.y);

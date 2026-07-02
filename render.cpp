@@ -33,53 +33,37 @@ Renderer::Renderer(vector<GLuint> attributes, GLuint max_sprites, Shader shader)
 
 
 
-Entity::Entity(float x, float y, Array* array, Renderer* renderer)
-	: x(x), y(y), array(array), renderer(renderer)
-{
-	cout << "ARRAY" << endl;
-	renderer->entities.push_back(this);
-}
+// Entity::Entity(float x, float y, Array* array, Renderer* renderer)
+// 	: x(x), y(y), array(array), renderer(renderer)
+// {
+// 	cout << "ARRAY" << endl;
+// 	renderer->entities.push_back(this);
+// }
 
 
-void Entity::draw() {
-	renderer->drawEntities();
-}
+// void Entity::draw() {
+// 	renderer->drawEntities();
+// }
 
 
+void Renderer::drawArrays() {
+	// sort by z-index to render arrays in a specific stacked order
+	// sort(entities.begin(), entities.end(), [](const Entity* a, const Entity* b) {
+	// 	return a->array->z_index < b->array->z_index;
+	// });
 
-void print_z_index(vector<Pixel> pixels) {
-	for (Pixel pixel : pixels) {
-		cout << pixel.z_index << endl;
-	}
-
-}
-
-
-void sortByZIndex(vector<Pixel> &pixels) {
-	sort(pixels.begin(), pixels.end(), [](const Pixel& a, const Pixel& b) {
-		return a.z_index < b.z_index;
-	});
-}
-
-void Renderer::drawEntities() {
-	sort(entities.begin(), entities.end(), [](const Entity* a, const Entity* b) {
-		return a->array->z_index < b->array->z_index;
+	sort(arrays.begin(), arrays.end(), [](const Array* a, const Array* b) {
+		return a->z_index < b->z_index;
 	});
 
-	for (Entity* i : entities) {
+	for (Array* i : arrays) {
 		if (i == nullptr) {
 			continue;
 		}
 
-		vector<Pixel> pixels;
-		if (i->array != nullptr) {
-			pixels = i->array->data;
-		}
-
-		for (Pixel pixel : pixels) {
+		for (Pixel pixel : i->data) {
 			drawPixel(pixel);
 		}
-
 	}
 }
 

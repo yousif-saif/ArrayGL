@@ -9,7 +9,7 @@
 using namespace std;
 
 
-class Entity;
+// class Entity;
 
 class Renderer {
     GLuint VBO_, VAO_, att_size_, max_sprites_;
@@ -22,25 +22,27 @@ class Renderer {
         Renderer(vector<GLuint> attributes, GLuint max_sprites, Shader shader);
         ~Renderer();
 
-        vector<Entity*> entities;
+        // vector<Entity*> entities;
+        vector<Array*> arrays;
 
         void begin();
         void end();
         void generate_buffer(Rect dest, Rect src, string bufferType);
         void drawPixel(Pixel pixel);
-        void drawArray(Array array);
-        void drawEntities();
+        // void drawArray(Array array);
+        void drawArrays();
         void flush(string bufferType);
 };
 
 
-class Entity {
-    public:
-        float x, y;
-        Array* array;
-        Renderer* renderer;
-        Entity(float x, float y, Array* array, Renderer* renderer);
+// class Entity {
+//     public:
+//         float x, y;
+//         Array* array;
+//         Renderer* renderer;
+//         Entity(float x, float y, Array* array, Renderer* renderer);
 
-        void draw();
+//         void draw();
 
-};
+// };
+
