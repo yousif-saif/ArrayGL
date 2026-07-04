@@ -23,14 +23,14 @@ class Renderer {
         ~Renderer();
 
         // vector<Entity*> entities;
-        vector<Array*> arrays;
+        vector<Array*> arrays_buffer;
+        vector<Pixel*> pixels_buffer;
 
         void begin();
         void end();
         void generate_buffer(Rect dest, Rect src, string bufferType);
-        void drawPixel(Pixel pixel);
-        // void drawArray(Array array);
-        void drawArrays();
+        void drawPixel(const Pixel &pixel);
+        void drawBuffers();
         void flush(string bufferType);
 };
 

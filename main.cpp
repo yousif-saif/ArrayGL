@@ -18,14 +18,17 @@
 
 using namespace std;
 
-void getInput(GLFWwindow* window, float &x, float &y);
-
-// void processInput(GLFWwindow* window);
-// Rect charater_dest = { 5, 5, 128, 128 };
-// Rect charater_dest2 = { 800 - 69, 600 - 69, 64, 64 };
-// Rect src = { 0, 0, 64, 64 };
+void WASD_input(GLFWwindow* window, float &x, float &y);
+void arrows_input(GLFWwindow* window, float &x, float &y);
 
 constexpr auto SPEED = 0.1f;
+
+glm::mat4 projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, 0.0f, -1.0f);
+void frame_buffer_size_callback(GLFWwindow* window, int width, int height) {
+    projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f, 0.0f, -1.0f);
+    glViewport(0, 0, width, height);
+}
+
 
 int main() {
     if (!glfwInit()) {
@@ -45,7 +48,8 @@ int main() {
         return 1;
     }
 
-    glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, frame_buffer_size_callback);
+
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -58,44 +62,49 @@ int main() {
     shader.use();
 
 
-    auto projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, 0.0f, -1.0f);
-    shader.set_mat4("projection", projection);
 
     Renderer renderer = Renderer(vector<GLuint>{2, 2}, 128, shader);
     
+    // FIX THE LINES WHEN CHANING DIMESNSIONS
+    Array array1(10, 5, 32, glm::vec3(0.1, 0.5, 0.7), &renderer, true, 1);
+    Array array2(4, 9, 32, glm::vec3(0.2, 0.4, 0.2), &renderer, false, 2);
+    array2.x = array1.width;
+    array2.y = array1.height;
+
+    // Array array3(8, 8, 32, glm::vec3(0.5, 0.8, 0.4), &renderer, false, 3);
+    // Array array4(7, 7, 32, glm::vec3(0.2, 0.9, 0.7), &renderer, false, 4);
+
+    // pair<Pixel, Pixel> player = make_pair(array1[9][1], array1[8][1]);
+    // glm::vec3 color{1.0, 0.0, 0.0};
+    // player.first.color = vector<float>{color[0], color[1], color[2]};
     
-    Array array1(10, 10, 32, glm::vec3(0.1, 0.5, 0.7), &renderer, false, 1);
-    Array array2(9, 9, 32, glm::vec3(0.2, 0.4, 0.2), &renderer, false, 2);
-    Array array3(8, 8, 32, glm::vec3(0.5, 0.8, 0.4), &renderer, false, 3);
-    Array array4(7, 7, 32, glm::vec3(0.2, 0.9, 0.7), &renderer, false, 4);
 
+    // glm::vec3 color2{0.5, 1.0, 1.0};
+    // player.second.color = vector<float>{color2[0], color2[1], color2[2]};
 
-    pair<Pixel, Pixel> player = make_pair(array1[9][1], array1[8][1]);
-    glm::vec3 color{1.0, 0.0, 0.0};
-    player.first.color = vector<float>{color[0], color[1], color[2]};
-    
+    // vector<Pixel> pixels = {
+    //     Pixel(100, 10, 32, 32, vector<float>{0.5, 1.0, 0.1}),
+    //     Pixel(100, 30, 32, 32, vector<float>{0.5, 0.8, 1.0}),
+    //     Pixel(100, 50, 32, 32, vector<float>{1.0, 0.5, 1.0})
 
-    glm::vec3 color2{0.5, 1.0, 1.0};
-    player.second.color = vector<float>{color2[0], color2[1], color2[2]};
-
-    vector<Pixel> pixels = {
-        Pixel(100, 10, 32, 32, vector<float>{0.5, 1.0, 0.1}),
-        Pixel(100, 30, 32, 32, vector<float>{0.5, 0.8, 1.0}),
-        Pixel(100, 50, 32, 32, vector<float>{1.0, 0.5, 1.0})
-
-    };
+    // };
 
 
     while (!glfwWindowShouldClose(window)) {
         glClearColor(255.0f, 0.0f, 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        renderer.drawPixel(player.first);
-        renderer.drawPixel(player.second);
-        renderer.drawArrays();
+        shader.set_mat4("projection", projection);
 
-        getInput(window, player.first.x, player.first.y);
-        getInput(window, player.second.x, player.second.y);
+        // renderer.drawPixel(player.first);
+        // renderer.drawPixel(player.second);
+        renderer.drawBuffers();
+
+        // WASD_input(window, player.first.x, player.first.y);
+        // WASD_input(window, player.second.x, player.second.y);
+        WASD_input(window, array1.x, array1.y);
+        arrows_input(window, array2.x, array2.y);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -110,12 +119,20 @@ int main() {
 }
 
 
-void getInput(GLFWwindow* window, float &x, float &y) {
+void WASD_input(GLFWwindow* window, float &x, float &y) {
     float speed = 10;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { y -= speed; }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { y += speed; }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { x -= speed; }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { x += speed; }
 
+}
+
+void arrows_input(GLFWwindow* window, float &x, float &y) {
+    float speed = 10;
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) { y -= speed; }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { y += speed; }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) { x -= speed; }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) { x += speed; }
 
 }

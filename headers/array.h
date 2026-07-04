@@ -8,20 +8,21 @@ class Renderer;
 
 class Array {
     public:
-        // TODO: ADD X AND Y CORDS CONTROL SO YOU CAN MOVE THE ARRAY AROUND ALR??????
-        float x;
-        float y;
-
+        float x = 0;
+        float y = 0;
 
         int rows;
         int cols;
+        int width;
+        int height;
         int pixelSize;
-        bool showLines;
+        bool show_lines;
+        int line_width = 5;
         int z_index;
         glm::vec3 color;
         vector<Pixel> data;
 
-        Array(int rows, int cols, int pixelSize, glm::vec3 color, Renderer *renderer, bool showLines, int z_index=0);
+        Array(int rows, int cols, int pixelSize, glm::vec3 color, Renderer *renderer, bool show_lines, int z_index=0);
         
         class RowProxy {
             private:

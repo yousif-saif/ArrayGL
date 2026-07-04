@@ -46,23 +46,53 @@ Renderer::Renderer(vector<GLuint> attributes, GLuint max_sprites, Shader shader)
 // }
 
 
-void Renderer::drawArrays() {
-	// sort by z-index to render arrays in a specific stacked order
-	// sort(entities.begin(), entities.end(), [](const Entity* a, const Entity* b) {
-	// 	return a->array->z_index < b->array->z_index;
-	// });
-
-	sort(arrays.begin(), arrays.end(), [](const Array* a, const Array* b) {
+void sort_by_z_index(vector<Array*> &arrays_buffer) {
+	sort(arrays_buffer.begin(), arrays_buffer.end(), [](const Array* a, const Array* b) {
 		return a->z_index < b->z_index;
 	});
 
-	for (Array* i : arrays) {
-		if (i == nullptr) {
-			continue;
+}
+
+void sort_by_z_index(vector<Pixel*> &pixels_buffer) {
+	sort(pixels_buffer.begin(), pixels_buffer.end(), [](const Pixel* a, const Pixel* b) {
+		return a->z_index < b->z_index;
+	});
+
+}
+
+void Renderer::drawBuffers() {
+	// Draw arrays buffer
+	if (arrays_buffer.size() >= 1) {
+		// sort by z-index to render arrays in a specific stacked order
+		sort_by_z_index(arrays_buffer);
+		for (Array* i : arrays_buffer) {
+			if (i == nullptr) {
+				continue;
+			}
+
+			for (Pixel pixel : i->data) {
+				drawPixel(Pixel(
+					pixel.x + i->x,
+					pixel.y + i->y,
+					pixel.w,
+					pixel.h,
+					pixel.color,
+					pixel.z_index
+				));
+
+			}
 		}
 
-		for (Pixel pixel : i->data) {
-			drawPixel(pixel);
+	}
+
+	// Draw pixels buffer
+	if (pixels_buffer.size() >= 1) {
+		sort_by_z_index(pixels_buffer);
+		for (Pixel* i : pixels_buffer) {
+			if (i == nullptr) {
+				continue;
+			}
+			drawPixel(*i);
 		}
 	}
 }
@@ -131,7 +161,7 @@ void Renderer::generate_buffer(Rect dest, Rect src, string bufferType) {
 }
 
 
-void Renderer::drawPixel(Pixel pixel) {
+void Renderer::drawPixel(const Pixel &pixel) {
 	string bufferType = "pixel";
 
 	glm::vec3 color(pixel.color[0], pixel.color[1], pixel.color[2]);
