@@ -31,6 +31,8 @@ void frame_buffer_size_callback(GLFWwindow* window, int width, int height) {
 
 
 int main() {
+    cout << "Hello ArrayGL!" << endl;
+
     if (!glfwInit()) {
         cerr << "GLFW FAILED TO INIT!" << endl;
         return 1;
@@ -63,31 +65,11 @@ int main() {
 
 
 
-    Renderer renderer = Renderer(vector<GLuint>{2, 2}, 128, shader);
-    
-    // FIX THE LINES WHEN CHANING DIMESNSIONS
-    Array array1(10, 5, 32, glm::vec3(0.1, 0.5, 0.7), &renderer, true, 1);
-    Array array2(4, 9, 32, glm::vec3(0.2, 0.4, 0.2), &renderer, false, 2);
+    Renderer renderer = Renderer(vector<GLuint>{2, 2}, 128, shader);    
+    Array array1(10, 10, 32, glm::vec3(0.1, 0.5, 0.7), &renderer, true, 2);
+    Array array2(4, 9, 32, glm::vec3(0.2, 0.4, 0.2), &renderer, true, 1);
     array2.x = array1.width;
     array2.y = array1.height;
-
-    // Array array3(8, 8, 32, glm::vec3(0.5, 0.8, 0.4), &renderer, false, 3);
-    // Array array4(7, 7, 32, glm::vec3(0.2, 0.9, 0.7), &renderer, false, 4);
-
-    // pair<Pixel, Pixel> player = make_pair(array1[9][1], array1[8][1]);
-    // glm::vec3 color{1.0, 0.0, 0.0};
-    // player.first.color = vector<float>{color[0], color[1], color[2]};
-    
-
-    // glm::vec3 color2{0.5, 1.0, 1.0};
-    // player.second.color = vector<float>{color2[0], color2[1], color2[2]};
-
-    // vector<Pixel> pixels = {
-    //     Pixel(100, 10, 32, 32, vector<float>{0.5, 1.0, 0.1}),
-    //     Pixel(100, 30, 32, 32, vector<float>{0.5, 0.8, 1.0}),
-    //     Pixel(100, 50, 32, 32, vector<float>{1.0, 0.5, 1.0})
-
-    // };
 
 
     while (!glfwWindowShouldClose(window)) {
@@ -96,12 +78,7 @@ int main() {
 
         shader.set_mat4("projection", projection);
 
-        // renderer.drawPixel(player.first);
-        // renderer.drawPixel(player.second);
         renderer.drawBuffers();
-
-        // WASD_input(window, player.first.x, player.first.y);
-        // WASD_input(window, player.second.x, player.second.y);
         WASD_input(window, array1.x, array1.y);
         arrows_input(window, array2.x, array2.y);
 
@@ -113,7 +90,6 @@ int main() {
     }
 
     glfwTerminate();
-    cout << "HELLO WORLD" << endl;
     return 0;
 
 }

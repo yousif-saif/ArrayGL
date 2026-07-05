@@ -23,6 +23,7 @@ class Array {
         vector<Pixel> data;
 
         Array(int rows, int cols, int pixelSize, glm::vec3 color, Renderer *renderer, bool show_lines, int z_index=0);
+        bool collision(Array array2);
         
         class RowProxy {
             private:
