@@ -1,8 +1,13 @@
 #pragma once
+
+#include "pixel.h"
+#include "array.h"
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <string>
-#include "./pixel.h"
+
+#include <GLFW/glfw3.h>
 
 class Renderer;
 
@@ -15,16 +20,22 @@ class Array {
         int cols;
         int width;
         int height;
-        int pixelSize;
-        bool show_lines;
-        int line_width = 5;
         int z_index;
-        glm::vec3 color;
+        int pixelSize;
+        int line_width = 5;
+        bool show_lines;
+        string input_mode;
+        int speed;
+
+        vector<int> color;
         vector<Pixel> data;
 
-        Array(int rows, int cols, int pixelSize, glm::vec3 color, Renderer *renderer, bool show_lines, int z_index=0);
+        Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *renderer, bool show_lines, int z_index=0);
         bool collision(Array array2);
-        
+        void WASD_input(float speed);
+        void arrows_input(float speed);
+
+
         class RowProxy {
             private:
                 Array& parent;

@@ -1,7 +1,7 @@
-#include "./headers/texture.h"
-// #define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
 #include <iostream>
+
+#include "../include/ArrayGL/texture.h"
+#include "stb/stb_image.h"
 
 void Texture::load(const GLchar* tex_file_name)
 {

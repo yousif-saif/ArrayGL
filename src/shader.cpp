@@ -1,7 +1,6 @@
-#include "./headers/shader.h"
+#include "../include/ArrayGL/shader.h"
 #include <fstream>
 #include <sstream>
-
 
 void Shader::compile(const GLchar* vs_data, const GLchar* fs_data) {
     GLuint vs, fs;
@@ -54,9 +53,10 @@ void Shader::compile(const GLchar* vs_data, const GLchar* fs_data) {
 }
 
 
-void Shader::load(const GLchar* vs_file_path, const GLchar* fs_file_path) { 
+void Shader::load(const GLchar* vs_file_path, const GLchar* fs_file_path) {
     vs_file_path_ = vs_file_path;
     fs_file_path_ = fs_file_path;
+
 
     string vs_code;
     string fs_code;

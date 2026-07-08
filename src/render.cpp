@@ -1,14 +1,15 @@
-#include "./headers/render.h"
-#include "./headers/pixel.h"
-#include "./headers/array.h"
 #include <algorithm>
+
+#include "../include/ArrayGL/render.h"
+#include "../include/ArrayGL/pixel.h"
+#include "../include/ArrayGL/array.h"
 
 using namespace std;
 
 constexpr auto VERTICES = 6u;
 
-Renderer::Renderer(vector<GLuint> attributes, GLuint max_sprites, Shader shader) 
-    : VBO_(0), VAO_(0), max_sprites_(max_sprites), shader(shader)
+Renderer::Renderer(GLFWwindow *window, Shader shader) 
+    : VBO_(0), VAO_(0), shader(shader)
 
 {
     att_size_ = 0;
@@ -32,19 +33,19 @@ Renderer::Renderer(vector<GLuint> attributes, GLuint max_sprites, Shader shader)
 }
 
 
+void move_WASD(GLFWwindow* window, float &x, float&y, float speed) {
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { y -= speed; }
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { y += speed; }
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { x -= speed; }
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { x += speed; }
+}
 
-// Entity::Entity(float x, float y, Array* array, Renderer* renderer)
-// 	: x(x), y(y), array(array), renderer(renderer)
-// {
-// 	cout << "ARRAY" << endl;
-// 	renderer->entities.push_back(this);
-// }
-
-
-// void Entity::draw() {
-// 	renderer->drawEntities();
-// }
-
+void move_arrows(GLFWwindow* window, float &x, float&y, float speed) {
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) { y -= speed; }
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { y += speed; }
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) { x -= speed; }
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) { x += speed; }	
+}
 
 void sort_by_z_index(vector<Array*> &arrays_buffer) {
 	sort(arrays_buffer.begin(), arrays_buffer.end(), [](const Array* a, const Array* b) {
@@ -70,6 +71,12 @@ void Renderer::drawBuffers() {
 				continue;
 			}
 
+			if (i->input_mode == "WASD") {
+				move_WASD(window, i->x, i->y, i->speed);
+			} else if (i->input_mode == "ARROWS") {
+				move_arrows(window, i->x, i->y, i->speed);
+			}
+
 			for (Pixel pixel : i->data) {
 				drawPixel(Pixel(
 					pixel.x + i->x,
@@ -92,6 +99,13 @@ void Renderer::drawBuffers() {
 			if (i == nullptr) {
 				continue;
 			}
+
+			if (i->input_mode == "WASD") {
+				move_WASD(window, i->x, i->y, i->speed);
+			} else if (i->input_mode == "ARROWS") {
+				move_arrows(window, i->x, i->y, i->speed);
+			}
+
 			drawPixel(*i);
 		}
 	}

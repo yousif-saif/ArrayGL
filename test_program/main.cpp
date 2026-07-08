@@ -1,20 +1,18 @@
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <fstream>
-#include <sstream>
+#include "../include/ArrayGL/texture.h"
+#include "../include/ArrayGL/shader.h"
+#include "../include/ArrayGL/render.h"
+#include "../include/ArrayGL/pixel.h"
+#include "../include/ArrayGL/array.h"
+
 #include <glm/ext/matrix_clip_space.hpp>
 #include <stb/stb_image.h>
-#include "./headers/shader.h"
-#include "./headers/texture.h"
-#include "./headers/render.h"
-#include "./headers/pixel.h"
-#include "./headers/array.h"
-#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/glm.hpp> 
+#include <iostream>
 #include <thread>
 #include <chrono>
+
 
 using namespace std;
 
@@ -55,9 +53,8 @@ int main() {
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    
-    const GLchar* pixel_vs_shader_path = "C:/Users/msi/Desktop/arrayGL/shaders/pixel.vs";
-    const GLchar* pixel_fs_shader_path = "C:/Users/msi/Desktop/arrayGL/shaders/pixel.fs";
+    const char* pixel_vs_shader_path = "shaders/pixel.vs";
+    const char* pixel_fs_shader_path = "shaders/pixel.fs";
 
     Shader shader;
     shader.load(pixel_vs_shader_path, pixel_fs_shader_path);
@@ -65,7 +62,7 @@ int main() {
 
 
 
-    Renderer renderer = Renderer(vector<GLuint>{2, 2}, 128, shader);    
+    Renderer renderer = Renderer(shader);    
     Array array1(10, 10, 32, glm::vec3(0.1, 0.5, 0.7), &renderer, true, 2);
     Array array2(4, 9, 32, glm::vec3(0.2, 0.4, 0.2), &renderer, true, 1);
     array2.x = array1.width;
