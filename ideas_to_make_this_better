@@ -1,2 +1,0 @@
-1. optimize the drawing by identifying the biggest square and render it as one big square instead of multiple squares
-2. do some memory optimization

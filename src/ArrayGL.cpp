@@ -27,10 +27,10 @@ vector<float> scale_down_color(vector<int> RGB) {
     return result;
 }
 
-void window(int width, int height, vector<int> color, string title) {    
+GLFWwindow* window(int width, int height, vector<int> color, string title) {    
     if (!glfwInit()) {
         cerr << "GLFW FAILED TO INIT!" << endl;
-        return;
+        return nullptr;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -42,7 +42,7 @@ void window(int width, int height, vector<int> color, string title) {
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         cerr << "FAILED TO LOAD GLAD" << endl;
-        return;
+        return nullptr;
     }
 
     glfwSetFramebufferSizeCallback(window_, frame_buffer_size_callback);
@@ -56,6 +56,8 @@ void window(int width, int height, vector<int> color, string title) {
     color_scaled = scale_down_color(color);
     renderer = new Renderer(window_, shader);
 
+
+    return window_;
 }
 
 Array make_array(
@@ -147,14 +149,3 @@ bool run(bool use_max_gpu) {
     
     return true;
 }
-
-
-// void WASD_input(Array &arr, float speed) {
-//     arr.input_mode = "WASD";
-//     arr.speed = speed;
-// }
-
-// void arrows_input(Array &arr, float speed) {
-//     arr.input_mode = "ARROWS";
-//     arr.speed = speed;
-// }

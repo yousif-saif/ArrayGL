@@ -30,7 +30,7 @@ vector<float> scale_down_color(
     vector<int> RGB
 );
 
-void window(
+GLFWwindow* window(
     int width=800,
     int height=600,
     vector<int> color=BLACK,
