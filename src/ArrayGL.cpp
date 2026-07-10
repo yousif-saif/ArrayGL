@@ -46,11 +46,6 @@ GLFWwindow* window(int width, int height, vector<int> color, string title) {
     }
 
     glfwSetFramebufferSizeCallback(window_, frame_buffer_size_callback);
-
-    const char* pixel_vs_shader_path = "shaders/pixel.vs";
-    const char* pixel_fs_shader_path = "shaders/pixel.fs";
-
-    shader.load(pixel_vs_shader_path, pixel_fs_shader_path);
     shader.use();
 
     color_scaled = scale_down_color(color);

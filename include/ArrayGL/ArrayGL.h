@@ -5,8 +5,6 @@
 #include "pixel.h"
 #include "rect.h"
 #include "render.h"
-#include "shader.h"
-#include "texture.h"
 
 
 #include <glm/ext/matrix_clip_space.hpp>

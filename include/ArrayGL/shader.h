@@ -9,7 +9,7 @@ using namespace std;
 class Shader {
     GLuint id_;
     string vs_file_path_, fs_file_path_;    
-    void compile(const GLchar* vs_data, const GLchar* fs_data);
+    void compile();
 
     public:
         Shader()
@@ -21,7 +21,7 @@ class Shader {
                 id_ = 0;
         }
 
-        void load(const GLchar* vs_file_path, const GLchar* fs_file_path);
+        // void load();
         void use();
         void set_bool(const GLchar* name, GLboolean value);
         void set_int(const GLchar* name, GLint value);
