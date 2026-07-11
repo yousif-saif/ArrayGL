@@ -77,12 +77,16 @@ void Renderer::drawBuffers() {
 				move_arrows(window, i->x, i->y, i->speed);
 			}
 
+			if (i->left_click_callback != NULL) {
+				left_click_callbacks.push_back(i->left_click_callback);
+			}
+
 			for (Pixel pixel : i->data) {
 				drawPixel(Pixel(
 					pixel.x + i->x,
 					pixel.y + i->y,
-					pixel.w,
-					pixel.h,
+					pixel.width,
+					pixel.height,
 					pixel.color,
 					pixel.z_index
 				));
@@ -135,14 +139,14 @@ void Renderer::generate_buffer(Rect dest, Rect src, string bufferType) {
 
 	// top left
 	buffers_[bufferType].push_back(dest.x);
-	buffers_[bufferType].push_back(dest.y + dest.h);
+	buffers_[bufferType].push_back(dest.y + dest.height);
 	buffers_[bufferType].push_back(src.x);
-	buffers_[bufferType].push_back(src.y + src.h);
+	buffers_[bufferType].push_back(src.y + src.height);
 
 	// top right
-	buffers_[bufferType].push_back(dest.x + dest.w);
+	buffers_[bufferType].push_back(dest.x + dest.width);
 	buffers_[bufferType].push_back(dest.y);
-	buffers_[bufferType].push_back(src.x + src.w);
+	buffers_[bufferType].push_back(src.x + src.width);
 	buffers_[bufferType].push_back(src.y);
 
 	// top left
@@ -155,20 +159,20 @@ void Renderer::generate_buffer(Rect dest, Rect src, string bufferType) {
 
 	// top left
 	buffers_[bufferType].push_back(dest.x);
-	buffers_[bufferType].push_back(dest.y + dest.h);
+	buffers_[bufferType].push_back(dest.y + dest.height);
 	buffers_[bufferType].push_back(src.x);
-	buffers_[bufferType].push_back(src.y + src.h);
+	buffers_[bufferType].push_back(src.y + src.height);
 
 	// top right
-	buffers_[bufferType].push_back(dest.x + dest.w);
-	buffers_[bufferType].push_back(dest.y + dest.h);
-	buffers_[bufferType].push_back(src.x + src.w);
-	buffers_[bufferType].push_back(src.y + src.h);
+	buffers_[bufferType].push_back(dest.x + dest.width);
+	buffers_[bufferType].push_back(dest.y + dest.height);
+	buffers_[bufferType].push_back(src.x + src.width);
+	buffers_[bufferType].push_back(src.y + src.height);
 
 	// top right
-	buffers_[bufferType].push_back(dest.x + dest.w);
+	buffers_[bufferType].push_back(dest.x + dest.width);
 	buffers_[bufferType].push_back(dest.y);
-	buffers_[bufferType].push_back(src.x + src.w);
+	buffers_[bufferType].push_back(src.x + src.width);
 	buffers_[bufferType].push_back(src.y);
 
 
@@ -181,7 +185,7 @@ void Renderer::drawPixel(const Pixel &pixel) {
 	glm::vec3 color(pixel.color[0], pixel.color[1], pixel.color[2]);
 	shader.set_vec3("color", color);
 
-	generate_buffer(Rect{pixel.x, pixel.y, pixel.w, pixel.h}, pixel.pixelSrc, "pixel");
+	generate_buffer(Rect{pixel.x, pixel.y, pixel.width, pixel.height}, pixel.pixelSrc, "pixel");
 	this->flush(bufferType);
 	didRender[bufferType] = true;
 

@@ -13,7 +13,7 @@ using namespace std;
 class Renderer;
 class Pixel {        
     public:
-        float x, y, w, h;
+        float x, y, width, height;
         int z_index;
         vector<int> color;
         string input_mode;
@@ -21,6 +21,7 @@ class Pixel {
         Rect pixelDest;
         Rect pixelSrc = { 0, 0, 0, 0 };
         Pixel(float x, float y, float w, float h, vector<int> color, int z_index=0, Renderer *renderer=nullptr);
+        bool collision(Pixel pixel2);
         void WASD_input(float speed);
         void arrows_input(float speed);
 

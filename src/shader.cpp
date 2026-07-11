@@ -1,6 +1,4 @@
 #include "../include/ArrayGL/shader.h"
-#include <fstream>
-#include <sstream>
 
 void Shader::compile() {
     GLuint vs, fs;

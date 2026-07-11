@@ -1,6 +1,8 @@
 #include "../include/ArrayGL/array.h"
 #include "../include/ArrayGL/pixel.h"
 #include "../include/ArrayGL/render.h"
+#include <functional>
+
 // #include "../include/ArrayGL/ArrayGL.h"
 
 
@@ -15,9 +17,9 @@
 
 Array::Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *renderer, bool show_lines, int z_index) 
 : rows(rows), cols(cols), pixelSize(pixelSize), color(color), show_lines(show_lines), z_index(z_index) {
-
     width = cols * pixelSize;
     height = rows * pixelSize;
+
     vector<Pixel> linesPixels;
 
     for (int i=0; i <= rows; i++) {
@@ -74,7 +76,7 @@ Array::Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *ren
 
 bool Array::collision(Array array2) {
     bool horizontalOverlap = (this->x + this->width >= array2.x) && (this->x <= array2.x + array2.width);    
-    bool verticalOverlap =   (this->y + this->height >= array2.y) && (this->y <= array2.y + array2.height);
+    bool verticalOverlap =   (this->x + this->height >= array2.y) && (this->y <= array2.y + array2.height);
     return horizontalOverlap && verticalOverlap;
     
 }
@@ -87,4 +89,8 @@ void Array::WASD_input(float speed) {
 void Array::arrows_input(float speed) {
     Array::input_mode = "ARROWS";
     Array::speed = speed;
+}
+
+void Array::on_left_click(function<void(void)> callback) {
+    left_click_callback = callback;
 }

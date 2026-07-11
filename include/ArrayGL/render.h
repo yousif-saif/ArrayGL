@@ -9,6 +9,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include <map>
+#include <any>
 
 // #include "ArrayGL.h"
 using namespace std;
@@ -34,6 +35,7 @@ class Renderer {
         // vector<Entity*> entities;
         vector<Array*> arrays_buffer;
         vector<Pixel*> pixels_buffer;
+        vector<function<void (void)>> left_click_callbacks;
 
         void begin();
         void end();

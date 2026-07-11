@@ -8,3 +8,4 @@ This is a list of unimplemented features, You can implement them as a contributo
 3. Draggable sub-windows
 4. Buttons
 5. More pre-defined shapes/colors
+6. Ability to add text

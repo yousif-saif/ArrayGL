@@ -1,4 +1,4 @@
 ./test
 ./ArrayGL.exe
-./.vscode
 ./make_release.bat
+./releases

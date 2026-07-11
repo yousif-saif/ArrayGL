@@ -18,12 +18,14 @@ class Array {
 
         int rows;
         int cols;
-        int width;
-        int height;
+        float width;
+        float height;
+        // Rect dims;
         int z_index;
         int pixelSize;
         int line_width = 5;
         bool show_lines;
+        function<void (void)> left_click_callback = NULL;
         string input_mode;
         int speed;
 
@@ -34,7 +36,7 @@ class Array {
         bool collision(Array array2);
         void WASD_input(float speed);
         void arrows_input(float speed);
-
+        void on_left_click(function<void (void)> callback);
 
         class RowProxy {
             private:

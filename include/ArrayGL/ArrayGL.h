@@ -18,6 +18,9 @@
 
 using namespace std;
 
+
+#define voidFunc function<void (void)>
+
 #define RED vector<int>{255, 0, 0}
 #define BLUE vector<int>{0, 0, 255}
 #define GREEN vector<int>{0, 255, 0}
@@ -66,3 +69,7 @@ Pixel make_pixel(
     vector<int> color=BLACK,
     int z_index=0
 );
+
+
+void add_callback(Array &arr, voidFunc callback);
+void add_callback(Pixel &pixel, voidFunc callback);

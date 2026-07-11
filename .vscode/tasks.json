@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe build active file",
+            "command": "C:/mingw64/bin/g++.exe",
+            "args": [
+                "-g",
+                "-std=c++17",
+                "-I${workspaceFolder}/include",
+                "-L${workspaceFolder}/lib",
+                "${workspaceFolder}/glad.c",
+                "${workspaceFolder}/*.cpp",
+                "-lglfw3dll",
+                "-o",
+                "${workspaceFolder}/cutable.exe",
+                "-lopengl32"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+
+            // command: g++ -g -std=c++17 -I./include -L./lib ./glad.c ./*.cpp -lglfw3dll -o cutable.exe -lopengl32
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "compiler: C:/mingw64/bin/g++.exe"
+        }
+    ]
+}

@@ -1,5 +1,26 @@
 #include "../include/ArrayGL/ArrayGL.h"
 
+#define voidFunc function<void (void)>
+
+
+// The Dims code is currently a stand-by code, i will work on it tmr, its 1AM rn, im gonna sleep
+// struct Dims {
+//     float &x;
+//     float &y;
+//     float &width;
+//     float &height;
+// };
+
+// struct left_click_callback {
+//     Dims &dims;
+//     voidFunc cb;
+// };
+
+struct left_click_callback {
+    Array &arr;
+    voidFunc cb;
+};
+
 
 glm::mat4 projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, 0.0f, -1.0f);
 void frame_buffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -11,8 +32,13 @@ GLFWwindow* window_;
 Shader shader;
 Renderer *renderer = nullptr;
 vector<float> color_scaled;
+vector<left_click_callback> left_click_callbacks;
 
 void terminate_program() {
+    // for (left_click_callback i : left_click_callbacks) {
+    //     delete &(i.dims);
+    // }
+
     delete renderer;
     glfwDestroyWindow(window_);
     glfwTerminate();
@@ -50,7 +76,6 @@ GLFWwindow* window(int width, int height, vector<int> color, string title) {
 
     color_scaled = scale_down_color(color);
     renderer = new Renderer(window_, shader);
-
 
     return window_;
 }
@@ -111,6 +136,50 @@ Pixel make_pixel(
 }
 
 
+// bool collision(Dims &dims, int x, int y) {
+bool collision(Array &arr, int x, int y) {
+    // cout << "x: " << dims.x << endl;
+    return (x >= arr.x && x <= arr.x + arr.width && 
+            y >= arr.y && y <= arr.y + arr.height);
+}
+
+
+// bool collision(Pixel &pix, int x, int y) {
+//     return (x >= pix.x && x <= pix.x + pix.width && 
+//             y >= pix.y && y <= pix.y + pix.height);
+// }
+
+
+void add_callback(Array &arr, voidFunc callback) {
+    // Dims *dims = new Dims{arr.x, arr.y, arr.width, arr.height};
+    // left_click_callbacks.push_back(left_click_callback{*dims, callback});
+    left_click_callbacks.push_back(left_click_callback{arr, callback});
+
+}
+
+// void add_callback(Pixel &pix, voidFunc callback) {
+//     left_click_callbacks.push_back(left_click_callback{pix, callback});
+// }
+
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)  {
+        cout << "CLICKED" << endl;
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        for (left_click_callback i : left_click_callbacks) {
+            cout << "BEFORE IF" << endl;
+            if (collision(i.arr, xpos, ypos)) {
+                cout << "CALLING CB SIR" << endl;
+                i.cb();
+            }
+        }
+
+    }
+}
+
+
+
 bool run(bool use_max_gpu) {
     if (renderer == nullptr) {
         cout << "Renderer hasn't been initialized yet." << endl;
@@ -126,6 +195,7 @@ bool run(bool use_max_gpu) {
         1.0f
     );
     glClear(GL_COLOR_BUFFER_BIT);
+    glfwSetMouseButtonCallback(window_, mouse_button_callback);
 
     shader.set_mat4("projection", projection);
     renderer->drawBuffers();
@@ -135,7 +205,6 @@ bool run(bool use_max_gpu) {
     glfwPollEvents();
 
     if (!use_max_gpu) this_thread::sleep_for(chrono::milliseconds(1));
-    // }
 
     if (glfwWindowShouldClose(window_)) {
         terminate_program();
