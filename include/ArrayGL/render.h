@@ -11,15 +11,17 @@
 #include <map>
 #include <any>
 
-// #include "ArrayGL.h"
 using namespace std;
 
-
-// class Entity;
+struct final_buffer {
+    Rect dims;
+    vector<int> color;
+    int z_index;
+};
 
 class Renderer {
     GLuint VBO_, VAO_, att_size_, max_arrays_;
-    map<string, vector<GLfloat>> buffers_; // buffer type, buffer
+    map<string, vector<GLfloat>> buffers_;
     map<string, bool> didRender;
     Shader shader;
 
@@ -35,26 +37,13 @@ class Renderer {
         // vector<Entity*> entities;
         vector<Array*> arrays_buffer;
         vector<Pixel*> pixels_buffer;
-        vector<function<void (void)>> left_click_callbacks;
+        vector<final_buffer> draw_buffer;
 
         void begin();
         void end();
         void generate_buffer(Rect dest, Rect src, string bufferType);
-        void drawPixel(const Pixel &pixel);
+        void drawPixel(final_buffer buf);
         void drawBuffers();
         void listen_for_keybord();
         void flush(string bufferType);
 };
-
-
-// class Entity {
-//     public:
-//         float x, y;
-//         Array* array;
-//         Renderer* renderer;
-//         Entity(float x, float y, Array* array, Renderer* renderer);
-
-//         void draw();
-
-// };
-

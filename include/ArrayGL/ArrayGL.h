@@ -70,6 +70,7 @@ Pixel make_pixel(
     int z_index=0
 );
 
+Renderer* get_renderer();
 
 void add_callback(Array &arr, voidFunc callback);
 void add_callback(Pixel &pixel, voidFunc callback);

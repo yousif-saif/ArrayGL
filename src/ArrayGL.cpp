@@ -1,23 +1,20 @@
 #include "../include/ArrayGL/ArrayGL.h"
+#include <algorithm>
 
 #define voidFunc function<void (void)>
 
 
-// The Dims code is currently a stand-by code, i will work on it tmr, its 1AM rn, im gonna sleep
-// struct Dims {
-//     float &x;
-//     float &y;
-//     float &width;
-//     float &height;
-// };
 
-// struct left_click_callback {
-//     Dims &dims;
-//     voidFunc cb;
-// };
+struct Dims {
+    float *x;
+    float *y;
+    float *width;
+    float *height;
+};
 
 struct left_click_callback {
-    Array &arr;
+    Dims dims;
+    int z_index;
     voidFunc cb;
 };
 
@@ -34,11 +31,8 @@ Renderer *renderer = nullptr;
 vector<float> color_scaled;
 vector<left_click_callback> left_click_callbacks;
 
-void terminate_program() {
-    // for (left_click_callback i : left_click_callbacks) {
-    //     delete &(i.dims);
-    // }
 
+void terminate_program() {
     delete renderer;
     glfwDestroyWindow(window_);
     glfwTerminate();
@@ -87,9 +81,7 @@ Array make_array(
     vector<int> color,
     bool show_lines,
     int z_index
-) {
-    // vector<float> array_color = scale_down_color(color);
-    
+) {    
     if (renderer != nullptr) {
         return Array(
             rows,
@@ -107,6 +99,9 @@ Array make_array(
     }
 }
 
+Renderer* get_renderer() {
+    return renderer;
+};
 
 Pixel make_pixel(
     float x,
@@ -136,45 +131,65 @@ Pixel make_pixel(
 }
 
 
-// bool collision(Dims &dims, int x, int y) {
-bool collision(Array &arr, int x, int y) {
-    // cout << "x: " << dims.x << endl;
-    return (x >= arr.x && x <= arr.x + arr.width && 
-            y >= arr.y && y <= arr.y + arr.height);
+bool collision(Dims dims, int x, int y) {
+    return (x >= *dims.x && x <= *dims.x + *dims.width && 
+            y >= *dims.y && y <= *dims.y + *dims.height);
 }
 
 
-// bool collision(Pixel &pix, int x, int y) {
-//     return (x >= pix.x && x <= pix.x + pix.width && 
-//             y >= pix.y && y <= pix.y + pix.height);
-// }
+void sort_by_z_index(vector<left_click_callback> &callbacks) {
+	sort(callbacks.begin(), callbacks.end(), [](const left_click_callback a, const left_click_callback b) {
+		return a.z_index > b.z_index;
+	});
+}
 
 
 void add_callback(Array &arr, voidFunc callback) {
-    // Dims *dims = new Dims{arr.x, arr.y, arr.width, arr.height};
-    // left_click_callbacks.push_back(left_click_callback{*dims, callback});
-    left_click_callbacks.push_back(left_click_callback{arr, callback});
+    Dims arrDims = {
+        &arr.x,
+        &arr.y,
+        &arr.width,
+        &arr.height
+    };
+
+    left_click_callbacks.push_back(left_click_callback{arrDims, arr.z_index, callback});
+    sort_by_z_index(left_click_callbacks);
+
 
 }
 
-// void add_callback(Pixel &pix, voidFunc callback) {
-//     left_click_callbacks.push_back(left_click_callback{pix, callback});
-// }
+void add_callback(Pixel &pixel, voidFunc callback) {
+    Dims pixDims = {
+        &pixel.x,
+        &pixel.y,
+        &pixel.width,
+        &pixel.height
+    };
+
+    left_click_callbacks.push_back(left_click_callback{pixDims, pixel.z_index, callback});
+    sort_by_z_index(left_click_callbacks);
+
+}
 
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)  {
-        cout << "CLICKED" << endl;
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
-        for (left_click_callback i : left_click_callbacks) {
-            cout << "BEFORE IF" << endl;
-            if (collision(i.arr, xpos, ypos)) {
-                cout << "CALLING CB SIR" << endl;
-                i.cb();
-            }
-        }
 
+        // collision is checked if the clicked point is inside the object's dimensions
+        // so it means if two objects are stacked on top of eachother the callback for both will be called
+        // because the clicked point is inside both object's dimensions.
+        // TODO: fix when clicking on an Object that doesn't have a callback should stop the click when trying
+        // to click an Object that do have a callback but is rendered under it
+        vector<left_click_callback> collided; 
+        for (left_click_callback i : left_click_callbacks) {
+            if (collision(i.dims, xpos, ypos)) { collided.push_back(i); }
+        }
+        if (!collided.empty()) {
+            collided[0].cb(); // only execute the callback of the Object that has the bigger z-index
+        }
+        
     }
 }
 
@@ -187,7 +202,6 @@ bool run(bool use_max_gpu) {
         return false;
     }
 
-    // while (!glfwWindowShouldClose(window_)) {
     glClearColor(
         color_scaled[0],
         color_scaled[1],

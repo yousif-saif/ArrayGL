@@ -3,17 +3,6 @@
 #include "../include/ArrayGL/render.h"
 #include <functional>
 
-// #include "../include/ArrayGL/ArrayGL.h"
-
-
-// vector<float> scale_down_color(vector<int> RGB) {
-//     vector<float> result;
-//     for (int channel : RGB) {
-//         result.push_back(channel/255.0);
-//     }
-//     return result;
-// }
-
 
 Array::Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *renderer, bool show_lines, int z_index) 
 : rows(rows), cols(cols), pixelSize(pixelSize), color(color), show_lines(show_lines), z_index(z_index) {
@@ -21,7 +10,6 @@ Array::Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *ren
     height = rows * pixelSize;
 
     vector<Pixel> linesPixels;
-
     for (int i=0; i <= rows; i++) {
         for (int j=0; j <= cols; j++) {
             if (i < rows && j < cols) {
@@ -76,7 +64,7 @@ Array::Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *ren
 
 bool Array::collision(Array array2) {
     bool horizontalOverlap = (this->x + this->width >= array2.x) && (this->x <= array2.x + array2.width);    
-    bool verticalOverlap =   (this->x + this->height >= array2.y) && (this->y <= array2.y + array2.height);
+    bool verticalOverlap =   (this->y + this->height >= array2.y) && (this->y <= array2.y + array2.height);
     return horizontalOverlap && verticalOverlap;
     
 }
@@ -91,6 +79,3 @@ void Array::arrows_input(float speed) {
     Array::speed = speed;
 }
 
-void Array::on_left_click(function<void(void)> callback) {
-    left_click_callback = callback;
-}

@@ -48,24 +48,28 @@ void move_arrows(GLFWwindow* window, float &x, float&y, float speed) {
 }
 
 void sort_by_z_index(vector<Array*> &arrays_buffer) {
-	sort(arrays_buffer.begin(), arrays_buffer.end(), [](const Array* a, const Array* b) {
+	stable_sort(arrays_buffer.begin(), arrays_buffer.end(), [](const Array* a, const Array* b) {
 		return a->z_index < b->z_index;
 	});
-
 }
 
 void sort_by_z_index(vector<Pixel*> &pixels_buffer) {
-	sort(pixels_buffer.begin(), pixels_buffer.end(), [](const Pixel* a, const Pixel* b) {
+	stable_sort(pixels_buffer.begin(), pixels_buffer.end(), [](const Pixel* a, const Pixel* b) {
 		return a->z_index < b->z_index;
 	});
+}
 
+void sort_by_z_index(vector<final_buffer> &pixels_buffer) {
+	stable_sort(pixels_buffer.begin(), pixels_buffer.end(), [](const final_buffer a, const final_buffer b) {
+		return a.z_index < b.z_index;
+	});
 }
 
 void Renderer::drawBuffers() {
 	// Draw arrays buffer
 	if (arrays_buffer.size() >= 1) {
 		// sort by z-index to render arrays in a specific stacked order
-		sort_by_z_index(arrays_buffer);
+		// sort_by_z_index(arrays_buffer);
 		for (Array* i : arrays_buffer) {
 			if (i == nullptr) {
 				continue;
@@ -77,42 +81,71 @@ void Renderer::drawBuffers() {
 				move_arrows(window, i->x, i->y, i->speed);
 			}
 
-			if (i->left_click_callback != NULL) {
-				left_click_callbacks.push_back(i->left_click_callback);
-			}
-
 			for (Pixel pixel : i->data) {
-				drawPixel(Pixel(
+				Rect dims{
 					pixel.x + i->x,
 					pixel.y + i->y,
 					pixel.width,
-					pixel.height,
-					pixel.color,
-					pixel.z_index
-				));
+					pixel.height
+				};
+
+				final_buffer draw = {dims, pixel.color, pixel.z_index};
+				draw_buffer.push_back(draw);
+
+				// drawPixel(Pixel(
+				// 	pixel.x + i->x,
+				// 	pixel.y + i->y,
+				// 	pixel.width,
+				// 	pixel.height,
+				// 	pixel.color,
+				// 	pixel.z_index
+				// ));
 
 			}
+
 		}
 
 	}
 
 	// Draw pixels buffer
 	if (pixels_buffer.size() >= 1) {
-		sort_by_z_index(pixels_buffer);
+		// sort_by_z_index(pixels_buffer);
+
 		for (Pixel* i : pixels_buffer) {
 			if (i == nullptr) {
 				continue;
 			}
-
+			Pixel pixel = *i;
 			if (i->input_mode == "WASD") {
 				move_WASD(window, i->x, i->y, i->speed);
 			} else if (i->input_mode == "ARROWS") {
 				move_arrows(window, i->x, i->y, i->speed);
 			}
+			
+			Rect dims{
+				pixel.x,
+				pixel.y,
+				pixel.width,
+				pixel.height
+			};
 
-			drawPixel(*i);
+			final_buffer draw{dims, pixel.color, pixel.z_index};
+			draw_buffer.push_back(draw);
+			// drawPixel(*i);
+
 		}
 	}
+
+
+	if (draw_buffer.size() >= 1) {
+		sort_by_z_index(draw_buffer);
+		for (final_buffer i : draw_buffer) {
+			drawPixel(i);
+		}
+	}
+
+	draw_buffer.clear();
+	
 }
 
 
@@ -179,13 +212,13 @@ void Renderer::generate_buffer(Rect dest, Rect src, string bufferType) {
 }
 
 
-void Renderer::drawPixel(const Pixel &pixel) {
+void Renderer::drawPixel(final_buffer buf) {
 	string bufferType = "pixel";
 
-	glm::vec3 color(pixel.color[0], pixel.color[1], pixel.color[2]);
+	glm::vec3 color(buf.color[0], buf.color[1], buf.color[2]);
 	shader.set_vec3("color", color);
 
-	generate_buffer(Rect{pixel.x, pixel.y, pixel.width, pixel.height}, pixel.pixelSrc, "pixel");
+	generate_buffer(Rect{buf.dims.x, buf.dims.y, buf.dims.width, buf.dims.height}, Rect{0, 0, 0, 0 }, "pixel");
 	this->flush(bufferType);
 	didRender[bufferType] = true;
 

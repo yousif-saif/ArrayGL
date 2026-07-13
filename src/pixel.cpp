@@ -4,17 +4,15 @@
 
 Pixel::Pixel(float x, float y, float width, float height, vector<int> color, int z_index, Renderer *renderer) 
     : x(x), y(y), width(width), height(height), color(color), z_index(z_index)
-{
+{   
+    
     pixelDest = {x, y, width, height};
-
     
     if (renderer != nullptr) {
         renderer->pixels_buffer.push_back(this);
     }
 
 }
-
-
 
 
 bool Pixel::collision(Pixel pixel2) {

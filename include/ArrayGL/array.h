@@ -20,23 +20,21 @@ class Array {
         int cols;
         float width;
         float height;
-        // Rect dims;
         int z_index;
         int pixelSize;
         int line_width = 5;
         bool show_lines;
-        function<void (void)> left_click_callback = NULL;
         string input_mode;
         int speed;
 
         vector<int> color;
         vector<Pixel> data;
 
+
         Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *renderer, bool show_lines, int z_index=0);
         bool collision(Array array2);
         void WASD_input(float speed);
         void arrows_input(float speed);
-        void on_left_click(function<void (void)> callback);
 
         class RowProxy {
             private:
