@@ -1,4 +1,5 @@
-test/
+/test/
 ArrayGL.exe
 make_release.bat
-releases/
+/releases/
+
