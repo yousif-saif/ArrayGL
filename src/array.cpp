@@ -56,7 +56,10 @@ Array::Array(int rows, int cols, int pixelSize, vector<int> color, Renderer *ren
     // the indexing system will check if the wanted index is in the range of rows and cols
     // wich will never touch these pixels
     data.insert(data.end(), linesPixels.begin(), linesPixels.end());
-    renderer->arrays_buffer.push_back(this);
+    for (Pixel &i : data) {
+        renderer->pixels_buffer.push_back(&i);
+    }
+    // renderer->arrays_buffer.push_back(this);
 
 }
 
@@ -70,12 +73,28 @@ bool Array::collision(Array array2) {
 }
 
 void Array::WASD_input(float speed) {
+    for (Pixel &i : data) {
+        i.input_mode = "WASD";
+        i.speed = speed;
+    }
+
     Array::input_mode = "WASD";
     Array::speed = speed;
 }
 
 void Array::arrows_input(float speed) {
+    for (Pixel &i : data) {
+        i.input_mode = "ARROWS";
+        i.speed = speed;
+    }
+
     Array::input_mode = "ARROWS";
     Array::speed = speed;
 }
 
+void Array::add_callback(voidFunc cb) {
+    for (Pixel &i : data) {
+        i.cb = cb;
+        i.has_cb = true;
+    }
+}

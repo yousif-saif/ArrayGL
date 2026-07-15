@@ -17,6 +17,7 @@ struct final_buffer {
     Rect dims;
     vector<int> color;
     int z_index;
+    voidFunc cb;
 };
 
 class Renderer {
@@ -38,12 +39,16 @@ class Renderer {
         vector<Array*> arrays_buffer;
         vector<Pixel*> pixels_buffer;
         vector<final_buffer> draw_buffer;
+        
+        vector<Pixel*> collided;
 
         void begin();
         void end();
         void generate_buffer(Rect dest, Rect src, string bufferType);
-        void drawPixel(final_buffer buf);
+        void drawPixel(Pixel &pixel);
         void drawBuffers();
         void listen_for_keybord();
         void flush(string bufferType);
+        void mouseCallback(double xpos, double ypos);
+
 };

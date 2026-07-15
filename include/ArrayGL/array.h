@@ -9,8 +9,8 @@
 
 #include <GLFW/glfw3.h>
 
-class Renderer;
 
+class Renderer;
 class Array {
     public:
         float x = 0;
@@ -26,6 +26,7 @@ class Array {
         bool show_lines;
         string input_mode;
         int speed;
+        voidFunc cb;
 
         vector<int> color;
         vector<Pixel> data;
@@ -35,6 +36,7 @@ class Array {
         bool collision(Array array2);
         void WASD_input(float speed);
         void arrows_input(float speed);
+        void add_callback(voidFunc cb);
 
         class RowProxy {
             private:

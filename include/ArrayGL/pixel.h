@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 
+#define voidFunc function<void (void)>
 
 using namespace std;
 class Renderer;
@@ -20,11 +21,11 @@ class Pixel {
         float speed;
         Rect pixelDest;
         Rect pixelSrc = { 0, 0, 0, 0 };
+        voidFunc cb;
+        bool has_cb = false;
         Pixel(float x, float y, float w, float h, vector<int> color, int z_index=0, Renderer *renderer=nullptr);
         bool collision(Pixel pixel2);
         void WASD_input(float speed);
         void arrows_input(float speed);
-
-
 
 };

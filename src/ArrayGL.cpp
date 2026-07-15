@@ -1,9 +1,6 @@
 #include "../include/ArrayGL/ArrayGL.h"
 #include <algorithm>
 
-#define voidFunc function<void (void)>
-
-
 
 struct Dims {
     float *x;
@@ -70,7 +67,7 @@ GLFWwindow* window(int width, int height, vector<int> color, string title) {
 
     color_scaled = scale_down_color(color);
     renderer = new Renderer(window_, shader);
-
+    glfwSetWindowUserPointer(window_, renderer);
     return window_;
 }
 
@@ -136,6 +133,10 @@ bool collision(Dims dims, int x, int y) {
             y >= *dims.y && y <= *dims.y + *dims.height);
 }
 
+// bool collision(final_buffer buf, int x, int y) {
+//     return (x >= buf.dims.x && x <= buf.dims.x + buf.dims.width && 
+//             y >= buf.dims.x && y <= buf.dims.x + buf.dims.height);
+// }
 
 void sort_by_z_index(vector<left_click_callback> &callbacks) {
 	sort(callbacks.begin(), callbacks.end(), [](const left_click_callback a, const left_click_callback b) {
@@ -145,54 +146,14 @@ void sort_by_z_index(vector<left_click_callback> &callbacks) {
 
 
 void add_callback(Array &arr, voidFunc callback) {
-    Dims arrDims = {
-        &arr.x,
-        &arr.y,
-        &arr.width,
-        &arr.height
-    };
-
-    left_click_callbacks.push_back(left_click_callback{arrDims, arr.z_index, callback});
-    sort_by_z_index(left_click_callbacks);
-
-
+    arr.add_callback(callback);
 }
 
 void add_callback(Pixel &pixel, voidFunc callback) {
-    Dims pixDims = {
-        &pixel.x,
-        &pixel.y,
-        &pixel.width,
-        &pixel.height
-    };
-
-    left_click_callbacks.push_back(left_click_callback{pixDims, pixel.z_index, callback});
-    sort_by_z_index(left_click_callbacks);
+    pixel.cb = callback;
+    pixel.has_cb = true;
 
 }
-
-
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)  {
-        double xpos, ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
-
-        // collision is checked if the clicked point is inside the object's dimensions
-        // so it means if two objects are stacked on top of eachother the callback for both will be called
-        // because the clicked point is inside both object's dimensions.
-        // TODO: fix when clicking on an Object that doesn't have a callback should stop the click when trying
-        // to click an Object that do have a callback but is rendered under it
-        vector<left_click_callback> collided; 
-        for (left_click_callback i : left_click_callbacks) {
-            if (collision(i.dims, xpos, ypos)) { collided.push_back(i); }
-        }
-        if (!collided.empty()) {
-            collided[0].cb(); // only execute the callback of the Object that has the bigger z-index
-        }
-        
-    }
-}
-
 
 
 bool run(bool use_max_gpu) {
@@ -209,7 +170,6 @@ bool run(bool use_max_gpu) {
         1.0f
     );
     glClear(GL_COLOR_BUFFER_BIT);
-    glfwSetMouseButtonCallback(window_, mouse_button_callback);
 
     shader.set_mat4("projection", projection);
     renderer->drawBuffers();
