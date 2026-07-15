@@ -105,8 +105,8 @@ Pixel make_pixel(
 
 Example usage:
 ```
-Pixel pixel_square = make_pixel(10, 20, 30, 30, BLACK);
-Pixel pixel_rectangle = make_pixel(10, 20, 30, 10, BLACK);
+Pixel pixel = make_pixel(10, 20, 30, 30, BLACK); // make a square pixel
+Pixel pixel = make_pixel(10, 20, 30, 10, BLACK); // make a rectangle pixel
 ```
 
 
@@ -125,7 +125,7 @@ Array make_array(
 
 Example usage:
 ```
-Array square = make_array(10, 10, 16, RED, false);
+Array array = make_array(10, 10, 16, RED, false);
 ```
 This will create an Array object and automatically renders it.
 
@@ -133,17 +133,17 @@ This will create an Array object and automatically renders it.
 
 Indexing into the array (this will return a Pixel object):
 ```
-square[row][column]
+array[row][column]
 ```
 
 Examples:
 ```
-square[5][1].x = 50;
-square[5][1].y = 30;
-square[5][1].w = 100;
-square[5][1].h = 100;
-square[5][1].color = BLACK; // pre-defined colors
-square[5][1].color = vector<int>{24, 224, 120}; // Custom RGB colors
+array[5][1].x = 50;
+array[5][1].y = 30;
+array[5][1].w = 100;
+array[5][1].h = 100;
+array[5][1].color = BLACK; // pre-defined colors
+array[5][1].color = vector<int>{24, 224, 120}; // Custom RGB colors
 ```
 
 
@@ -152,11 +152,31 @@ You can control Arrays/Pixels by calling the property `WASD_input(float speed)` 
 
 For example:
 ```
-square.WASD_input(10.0);
-pixel_square.WASD_input(10.0);
+// Move using W, A, S, and D letters:
+array.WASD_input(10.0);
+pixel.WASD_input(10.0);
 
-square.arrows_input(10.0);
-pixel_square.arrows_input(10.0);
+// Move using arrow buttons:
+array.arrows_input(10.0);
+pixel.arrows_input(10.0);
+```
+
+## Make your Arrays/Pixels interactive
+When an Array/Pixel is clicked, you can execute a custom callback of your own.
+For example:
+```
+void array_callback() {
+    cout << "Executing Array callback" << endl;
+}
+
+void pixel_callback() {
+    cout << "Executing Pixel callback" << endl;
+}
+
+
+add_callback(array, array_callback);
+add_callback(pixel, pixel_callback);
+
 ```
 
 </br>
